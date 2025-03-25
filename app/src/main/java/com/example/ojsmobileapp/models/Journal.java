@@ -5,7 +5,8 @@ public class Journal {
     private String name;
     private String description;
     private String abbreviation;
-    private String logo;
+    private String portada;
+    private String journalThumbnail;
 
     // Getters con manejo de nulos
     public String getJournal_id() {
@@ -24,7 +25,36 @@ public class Journal {
         return abbreviation != null ? abbreviation : "";
     }
 
-    public String getLogo() {
-        return logo != null ? logo : "";
+    public String getPortada() {
+        return portada != null ? portada : "";
+    }
+
+    public String getJournalThumbnail() {
+        return journalThumbnail != null ? journalThumbnail : "";
+    }
+
+    // Setters
+    public void setJournal_id(String journal_id) {
+        this.journal_id = journal_id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+
+    public void setPortada(String portada) {
+        this.portada = portada;
+    }
+
+    public void setJournalThumbnail(String journalThumbnail) {
+        this.journalThumbnail = journalThumbnail;
     }
 }

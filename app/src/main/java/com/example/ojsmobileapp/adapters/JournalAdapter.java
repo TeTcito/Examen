@@ -24,7 +24,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.JournalViewHolder> {
-
     private Context context;
     private List<Journal> journals;
     private OnItemClickListener listener;
@@ -81,9 +80,14 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.JournalV
     }
 
     private void loadImage(JournalViewHolder holder, Journal journal) {
-        if (!journal.getLogo().isEmpty()) {
+        String imageUrl = journal.getPortada();
+
+        if (!imageUrl.isEmpty()) {
+            // Limpiar la URL si viene con caracteres de escape
+            imageUrl = imageUrl.replace("\\/", "/");
+
             Picasso.get()
-                    .load(journal.getLogo())
+                    .load(imageUrl)
                     .placeholder(R.drawable.ic_default_journal)
                     .error(R.drawable.ic_default_journal)
                     .fit()
@@ -96,10 +100,28 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.JournalV
 
                         @Override
                         public void onError(Exception e) {
-                            Log.e("Picasso", "Error al cargar imagen: " + e.getMessage());
-                            holder.journalLogo.setImageResource(R.drawable.ic_default_journal);
+                            Log.e("Picasso", "Error al cargar imagen de portada: " + e.getMessage());
+                            // Intentar cargar el thumbnail si la portada falla
+                            loadThumbnail(holder, journal);
                         }
                     });
+        } else {
+            // Si no hay portada, intentar cargar el thumbnail
+            loadThumbnail(holder, journal);
+        }
+    }
+
+    private void loadThumbnail(JournalViewHolder holder, Journal journal) {
+        String thumbnailUrl = journal.getJournalThumbnail();
+        if (!thumbnailUrl.isEmpty() && !thumbnailUrl.equals("[]")) {
+            thumbnailUrl = thumbnailUrl.replace("\\/", "/");
+            Picasso.get()
+                    .load(thumbnailUrl)
+                    .placeholder(R.drawable.ic_default_journal)
+                    .error(R.drawable.ic_default_journal)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.journalLogo);
         } else {
             holder.journalLogo.setImageResource(R.drawable.ic_default_journal);
         }
@@ -109,7 +131,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.JournalV
         try {
             if (!journal.getDescription().isEmpty()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    holder.journalDescription.setText(Html.fromHtml(journal.getDescription(), Html.FROM_HTML_MODE_COMPACT));
+                    holder.journalDescription.setText(Html.fromHtml(journal.getDescription(),
+                            Html.FROM_HTML_MODE_COMPACT));
                 } else {
                     holder.journalDescription.setText(Html.fromHtml(journal.getDescription()));
                 }
@@ -134,7 +157,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.JournalV
     private void setAnimation(View viewToAnimate, int position) {
         if (position > lastPosition) {
             try {
-                Animation animation = AnimationUtils.loadAnimation(context, R.anim.intem_animation);
+                Animation animation = AnimationUtils.loadAnimation(context,
+                        R.anim.item_animation);
                 if (animation != null) {
                     viewToAnimate.startAnimation(animation);
                     lastPosition = position;
