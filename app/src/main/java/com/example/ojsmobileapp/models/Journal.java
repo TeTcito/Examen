@@ -8,7 +8,6 @@ public class Journal {
     private String portada;
     private String journalThumbnail;
 
-    // Getters con manejo de nulos
     public String getJournal_id() {
         return journal_id != null ? journal_id : "";
     }
@@ -33,7 +32,6 @@ public class Journal {
         return journalThumbnail != null ? journalThumbnail : "";
     }
 
-    // Setters
     public void setJournal_id(String journal_id) {
         this.journal_id = journal_id;
     }

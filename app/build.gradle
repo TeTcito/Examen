@@ -52,4 +52,9 @@ dependencies {
     androidTestImplementation libs.junit.v121
     //noinspection GradleDependency
     androidTestImplementation libs.espresso.core.v361
+
+    // Glide para imágenes
+    implementation libs.glide
+    annotationProcessor libs.compiler
+
 }
