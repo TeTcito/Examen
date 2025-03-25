@@ -7,7 +7,7 @@
 
 ## 📖 Selección de Volúmenes
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c45e7501-a93c-4e6a-993a-f7aff6570067" alt="Selección de Volúmenes">
+  <img src="https://github.com/user-attachments/assets/1a033fd0-ae8f-44b4-8133-6e5407476ba6" alt="Selección de Volúmenes">
 </p>
 
 ## 📑 Visualización de Artículos
@@ -20,7 +20,7 @@
   <img src="https://github.com/user-attachments/assets/2959d2d0-4ca3-431c-b112-6942de9e1ca1" alt="Descarga de PDF">
 </p>
 <p align="center">
-  <i>"Debido a permisos no se puede descargar ya que es un emulador"</i>
+  <i>"Debido a permisos no se puede descargar debido a ciertas versiones tienen mas seguridad"</i>
 </p>
 
 ## 🌐 Visualización en HTML
