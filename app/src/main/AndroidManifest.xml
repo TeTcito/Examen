@@ -26,7 +26,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Actividad de publicaciones (NO es LAUNCHER) -->
+        <!-- Actividad de volúmenes -->
+        <activity
+            android:name=".IssuesActivity"
+            android:exported="false" />
+
+        <!-- Actividad de artículos -->
         <activity
             android:name=".PublicationsActivity"
             android:exported="false" />

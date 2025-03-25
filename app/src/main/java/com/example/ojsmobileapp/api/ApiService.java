@@ -1,5 +1,6 @@
 package com.example.ojsmobileapp.api;
 
+import com.example.ojsmobileapp.models.Issue;
 import com.example.ojsmobileapp.models.Journal;
 import com.example.ojsmobileapp.models.Publication;
 
@@ -11,6 +12,9 @@ import retrofit2.http.Query;
 public interface ApiService {
     @GET("journals.php")
     Call<List<Journal>> getJournals();
+
+    @GET("issues.php")
+    Call<List<Issue>> getIssues(@Query("j_id") String journalId);
 
     @GET("pubs.php")
     Call<List<Publication>> getPublications(@Query("i_id") String issueId);
