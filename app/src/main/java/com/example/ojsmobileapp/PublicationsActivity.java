@@ -1,7 +1,6 @@
 package com.example.ojsmobileapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,10 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ojsmobileapp.adapters.JournalAdapter;
+import com.example.ojsmobileapp.adapters.PublicationAdapter;
 import com.example.ojsmobileapp.api.ApiService;
 import com.example.ojsmobileapp.api.RetrofitClient;
-import com.example.ojsmobileapp.models.Journal;
+import com.example.ojsmobileapp.models.Publication;
 
 import java.util.List;
 
@@ -26,16 +25,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class PublicationsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private TextView errorTextView;
-    private JournalAdapter adapter;
+    private PublicationAdapter adapter;
+    private String issueId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_publications);
+
+        // Obtener el ID de la edición seleccionada
+        issueId = getIntent().getStringExtra("ISSUE_ID");
+        if (issueId == null || issueId.isEmpty()) {
+            Toast.makeText(this, "No se ha seleccionado una edición válida", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         initializeViews();
         checkNetworkConnection();
@@ -52,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkNetworkConnection() {
         if (isNetworkAvailable()) {
-            loadJournals();
+            loadPublications();
         } else {
             showError("No hay conexión a internet. Conéctate a una red y reinicia la aplicación.");
         }
@@ -70,24 +78,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadJournals() {
+    private void loadPublications() {
         showLoading();
 
         ApiService apiService = RetrofitClient.getApiService();
-        Call<List<Journal>> call = apiService.getJournals();
+        Call<List<Publication>> call = apiService.getPublications(issueId);
 
-        call.enqueue(new Callback<List<Journal>>() {
+        call.enqueue(new Callback<List<Publication>>() {
             @Override
-            public void onResponse(Call<List<Journal>> call, Response<List<Journal>> response) {
+            public void onResponse(Call<List<Publication>> call, Response<List<Publication>> response) {
                 runOnUiThread(() -> {
                     hideLoading();
 
                     if (response.isSuccessful() && response.body() != null) {
-                        List<Journal> journals = response.body();
-                        if (journals == null || journals.isEmpty()) {
+                        List<Publication> publications = response.body();
+                        if (publications == null || publications.isEmpty()) {
                             showEmptyView();
                         } else {
-                            showJournals(journals);
+                            showPublications(publications);
                         }
                     } else {
                         showError("Error al obtener datos del servidor. Código: " + response.code());
@@ -96,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Journal>> call, Throwable t) {
+            public void onFailure(Call<List<Publication>> call, Throwable t) {
                 runOnUiThread(() -> {
                     hideLoading();
                     Log.e("API_CALL", "Error en la llamada API", t);
@@ -128,29 +136,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showEmptyView() {
-        errorTextView.setText("No se encontraron revistas disponibles");
+        errorTextView.setText("No se encontraron artículos disponibles");
         errorTextView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
     }
 
-    private void showJournals(List<Journal> journals) {
+    private void showPublications(List<Publication> publications) {
         errorTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
-        adapter = new JournalAdapter(this, journals, journal -> {
-            // Cuando se selecciona una revista, abrir la actividad de publicaciones
-            Intent intent = new Intent(MainActivity.this, PublicationsActivity.class);
-            intent.putExtra("ISSUE_ID", journal.getJournal_id()); // Pasar el ID de la revista
-            startActivity(intent);
-        });
+        adapter = new PublicationAdapter(this, publications);
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (adapter != null) {
-            adapter = null;
-        }
     }
 }
